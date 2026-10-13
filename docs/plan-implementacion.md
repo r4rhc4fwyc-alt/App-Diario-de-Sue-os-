@@ -7,6 +7,10 @@ repositorio, esquema de base de datos y stack confirmado.
 Estado: **borrador a la espera de aprobación.** No se escribe código de la
 aplicación hasta que este documento esté aprobado.
 
+El **porqué** del proyecto —la arqueología onírica personal— vive en
+[`objetivo.md`](objetivo.md). Este plan es el *cómo*; aquel es el *para qué*, y
+manda sobre este.
+
 Nota: la especificación todavía no está en el repositorio (vive en el chat).
 Su primer lugar será `docs/especificacion.md`, como primer commit de la etapa 0.
 Las referencias de este plan (§1, §5.3, §8.1…) apuntan a ella.

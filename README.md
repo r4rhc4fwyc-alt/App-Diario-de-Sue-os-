@@ -7,6 +7,18 @@ de lenguaje sólo lo que requiere lenguaje.
 
 Español (Chile) en toda la interfaz y todo el contenido.
 
+## El norte
+
+Esta no es una app de diario con estadísticas. Es una herramienta de
+**arqueología onírica personal**: investigar, excavar y rescatar la historia de
+los propios sueños a lo largo de la vida, para descubrir patrones, símbolos
+olvidados y fuentes de sabiduría interna. Cada función —el cruce de datos, la
+reentrada, las asignaciones verificables, el PDF— existe para servir a esa
+excavación.
+
+→ [`docs/objetivo.md`](docs/objetivo.md) lo explica entero y es el documento que
+gobierna por qué existe cada cosa.
+
 ## Estado
 
 Etapa 0, sin empezar. El plan de implementación está propuesto y espera
