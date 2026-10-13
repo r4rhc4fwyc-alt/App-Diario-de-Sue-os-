@@ -947,7 +947,11 @@ ejecución tuya, con el runbook que escribo yo:
 
 **Bloquea la etapa 2:** P3 (orden de la repregunta), P5 (foto de la carta), P6
 (a qué sueños aplica una declaración de noche), P9 (resultado de la prueba de
-dictado), P10 **nuevo**: la lista de las 44 cartas del mazo, número y nombre.
+dictado), P10: la lista de las 44 cartas del mazo. El mazo ya está identificado
+—*Lucid Dreaming, Lucid Living* de Burton & Burton, 44 cartas en tres bloques
+(negras 1–22, blancas 23–33, cielo estrellado 34–44), cada una con un mensaje de
+vigilia y uno de sueño— así que solo falta transcribir número + nombre (y, si
+quieres, los dos mensajes) para sembrar la tabla.
 
 **Bloquea la etapa 5:** P4 (color de los títulos del PDF: hay registro de
 «morados confirmados» y el código usa ocre).
@@ -1063,3 +1067,70 @@ en el servidor.
 P1 (numeración al partir un sueño), P2 (propuesta en §5, a tu palabra), P3, P4,
 P5, P6, P9 y P10 (la lista de las 44 cartas). Cada uno se pregunta cuando su
 etapa lo necesite, como pide §0.4 de la especificación.
+
+---
+
+## 17. Lo que el hand-off dejó fuera (leído contra la v7.2)
+
+Comparé la especificación que recibí contra las instrucciones completas v7.2.
+El resumen era fiel en lo grande; esto es lo que no llegó y que conviene tener
+presente. Nada de esto contradice los invariantes.
+
+### 17.1 La mitad del sistema actual es andamiaje de chatbot — y la app lo borra
+Buena parte de la v7.2 existe solo porque hoy el sistema vive en conversaciones
+sin memoria ni base de datos: los **dos hilos** por semana (Captura / Taller),
+el **handoff del domingo**, el **candado de entrada**, reemplazar archivos
+enteros, "leer `indice.md`, nunca de memoria", "si no está a la vista, pregunta
+el último ID". Todo eso es higiene de contexto y defensa contra el olvido.
+Con una base de datos de verdad, **desaparece por completo**: no hay hilos que
+separar, no hay handoff que traspasar, el ID lo da el servidor en una
+transacción y el índice está siempre al día. Es la mayor mejora de la app, y no
+es de comodidad: elimina una familia entera de errores.
+
+### 17.2 Cosas que fallaron en el sistema actual y que la app previene por diseño
+- La v7.2 dice que **tres veces** (A-015, A-016, A-017) una autoverificación que
+  venía dentro del propio relato quedó sin trasladar a ARQUEOLOGÍA. → La app lo
+  detecta al generar la ficha (ver 17.3).
+- El split S-0018/S-0019 → modelado con `rango` sobre el dictado.
+- Un error de ID "queda fosilizado en varios archivos a la vez" → imposible: el
+  ID es único en la base y lo asigna solo el servidor.
+- La lectura estrecha de ACTO (solo control lúcido) fue un error del modelo en un
+  taller → en la app ACTO es una faceta abierta que confirma Roberto.
+
+### 17.3 Detalles de contenido que no estaban en la especificación
+- **El mazo, a fondo.** *Lucid Dreaming, Lucid Living* (Burton & Burton), 44
+  cartas en tres bloques (negras 1–22 Lucid Dream Journeys, blancas 23–33 State
+  Checks/estabilización/cambio de realidad, cielo estrellado 34–44), y **cada
+  carta trae un mensaje de vigilia y uno de sueño**. La tabla `carta_mazo` debe
+  guardar bloque y, si Roberto quiere, los dos mensajes — así la app puede
+  mostrarlos cuando se saca una carta, sin que el modelo tenga que conocer el
+  mazo de memoria.
+- **Autoverificación dentro del crudo.** Cuando el relato ya trae su propia
+  verificación ("es un lugar real que existe"), el generador de ficha debe
+  proponer una asignación con `modo_verificacion = 'testimonio dentro del crudo'`
+  y poblar ARQUEOLOGÍA — como propuesta que Roberto confirma, nunca automática.
+- **El método: tres movimientos y los estratos** (sueño asigna tarea →
+  investigación documental → reentrada; estratos I biográfico, II ancestral, III
+  cultural archivado). Guardado en `objetivo.md`; el estrato y su definición
+  acompañan a cada asignación como ayuda.
+- **"Sobre Roberto".** Su estilo (piensa por contraste y eliminación, prefiere
+  casos antes que definiciones, valora que se le señalen tensiones y trampas
+  reales, la afirmación integrada y nunca como bloque de elogio) y su perfil
+  onírico (chequeos de realidad y meditaciones guiadas son lo que mejor le
+  funciona; despierta varias veces por noche; perfil MILD con WBTB incorporado).
+  Esto va al prompt del taller **con un cortafuegos explícito**: calibra el TONO
+  y el MODO de dirigirse a él, nunca el significado de un símbolo. El perfil de
+  inducción jamás se usa para sugerir técnicas (invariante: no se infieren).
+- **Dream signs = puente diario ↔ inducción.** Lo que se repite en el corpus
+  pasa a ser el objetivo de los chequeos de realidad diurnos. (La app los
+  muestra en cierres y en Explorar; nunca como recordatorio, por el invariante 8.)
+- **VÍA DE LUCIDEZ ≠ TÉCNICA.** La técnica es lo que intentó; la vía, cómo llegó
+  de hecho la lucidez. El desajuste entre ambas es información — buen candidato
+  para la etapa 6 (visualizaciones).
+- **Reentrada rige solo hacia adelante.** Los sueños con reentrada anteriores a
+  la regla no se revisan retroactivamente. Nota para la migración: no rellenar
+  `via_reentrada` hacia atrás.
+
+### 17.4 Contradicción heredada a resolver (ya marcada)
+El color de los títulos del PDF: el generador usa ocre, pero hay un registro de
+"títulos morados confirmados". Es P4; la v7.2 lo marca **[SIN CONFIRMAR]** igual.

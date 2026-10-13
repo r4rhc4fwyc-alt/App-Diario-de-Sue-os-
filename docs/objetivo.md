@@ -45,6 +45,33 @@ propio corpus de sueños de Roberto, a lo largo de su vida.
 Referencia: Robert Moss, *The Secret History of Dreaming* y *The Boy Who Died
 and Came Back: Adventures of a Dream Archaeologist in the Multiverse*.
 
+## El método: tres movimientos
+
+La v7.2 del sistema actual lo dice en una línea, y es el corazón de la práctica:
+
+1. **El sueño asigna una tarea.** De la escena soñada sale algo chequeable.
+2. **Se investiga documentalmente.** Fotos, papeles, preguntar a la familia, ir
+   al lugar; para lo ancestral, registro civil, archivos parroquiales,
+   genealogía.
+3. **Se vuelve a entrar al sueño.** La reentrada, para continuar lo que quedó
+   abierto.
+
+Los estratos de la excavación:
+
+- **Estrato I — biográfico.** El propio pasado de Roberto.
+- **Estrato II — ancestral.** La historia familiar y transgeneracional.
+- **Estrato III — cultural.** Se archiva; no se trabaja todavía.
+
+Dos verdades de la v7.2 que esta app debe proteger:
+
+- La arqueología es **el único lugar del sistema donde se puede estar
+  equivocado, y por eso sostiene todo lo demás.** Que una afirmación se refute
+  no es un fracaso: es lo que le da peso a las que se confirman. Por eso la tasa
+  de verificación es un dato, jamás una meta.
+- **Los sueños fantásticos no valen menos.** Alimentan la cartografía de la
+  geografía onírica recurrente, que es lo que después permite el trabajo con los
+  lugares y las reliquias del mundo interno.
+
 ## Cómo las piezas de la app sirven a esta excavación
 
 Lo que en la especificación parecían campos y tablas sueltos son, en realidad,
