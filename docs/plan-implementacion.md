@@ -1044,6 +1044,21 @@ como si fueran fijos. El orden de magnitud es unos pocos dólares al mes por el
 servidor y cero por los respaldos mientras el corpus quepa en 10 GB. Lo
 confirmas en la página de Vultr al momento de crear la cuenta.
 
+### 16.6 Versión pagada (servidor siempre encendido) — confirmada
+Roberto eligió el servidor siempre disponible en vez de usar su propio
+computador como servidor. El teléfono puede sincronizar a cualquier hora sin
+depender de que haya un computador prendido. Es el VPS de §16.4 (Vultr Santiago),
+del orden de unos pocos dólares al mes.
+
+### 16.7 Claude prepara las fichas automáticamente — confirmado
+Roberto eligió que el modelo genere la ficha borrador de cada sueño (quién, dónde,
+mundo, tono, símbolos, sospechas de transcripción), que él luego revisa y
+confirma. Es el flujo del §7.1, con todas sus barreras: el modelo nunca toca el
+crudo, nunca calcula hechos, y todo lo que propone queda marcado como borrador
+hasta que Roberto lo confirma. Costo: la API de Claude se paga por uso, del orden
+de unos pocos dólares al mes al volumen de Roberto. La llave de la API vive solo
+en el servidor.
+
 ### 16.5 Lo que sigue pendiente
 P1 (numeración al partir un sueño), P2 (propuesta en §5, a tu palabra), P3, P4,
 P5, P6, P9 y P10 (la lista de las 44 cartas). Cada uno se pregunta cuando su

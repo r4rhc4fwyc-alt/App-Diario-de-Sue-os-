@@ -22,8 +22,9 @@ gobierna por qué existe cada cosa.
 ## Estado
 
 Etapa 0, sin empezar. El plan de implementación está propuesto y espera
-aprobación. Decidido ya: captura sólo desde el celular (iPhone), VPS en Vultr
-Santiago, base cifrada con SQLCipher y respaldos cifrados con `age` en
+aprobación. Decidido ya: captura sólo desde el celular (iPhone); servidor
+siempre encendido en Vultr Santiago; Claude prepara las fichas borrador de forma
+automática; base cifrada con SQLCipher y respaldos cifrados con `age` en
 Backblaze B2.
 
 - [`docs/plan-implementacion.md`](docs/plan-implementacion.md) — stack,
