@@ -10,7 +10,9 @@ Español (Chile) en toda la interfaz y todo el contenido.
 ## Estado
 
 Etapa 0, sin empezar. El plan de implementación está propuesto y espera
-aprobación.
+aprobación. Decidido ya: captura sólo desde el celular (iPhone), VPS en Vultr
+Santiago, base cifrada con SQLCipher y respaldos cifrados con `age` en
+Backblaze B2.
 
 - [`docs/plan-implementacion.md`](docs/plan-implementacion.md) — stack,
   estructura del repositorio, esquema de base de datos, pruebas de invariante,

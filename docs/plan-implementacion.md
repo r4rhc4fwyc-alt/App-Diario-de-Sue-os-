@@ -27,6 +27,8 @@ Las referencias de este plan (§1, §5.3, §8.1…) apuntan a ella.
 | Validación | `pydantic` en la frontera HTTP; JSON Schema estricto (`additionalProperties: false`) para lo que devuelve el modelo | Invariante 2: el esquema del modelo no tiene dónde poner el crudo. |
 | Pruebas | `pytest` + `playwright` (sólo para la PWA sin conexión) | Las pruebas de invariante son parte del entregable, no un extra. |
 | Despliegue | Contenedor (Podman o Docker) + unidad systemd, detrás de Tailscale | §3.1. Documentado en `docs/despliegue.md`. |
+| VPS | Vultr, región Santiago de Chile | Latencia de milisegundos en vez de centenares, y los datos no salen del país. Ver §16.4. |
+| Respaldos | Backblaze B2, cifrados con `age` antes de salir del VPS | El corpus es texto: entra sobrado en los 10 GB gratis permanentes. B2 nunca ve contenido. |
 
 ### 1.1 Alternativas descartadas (y por qué)
 
@@ -746,6 +748,13 @@ si la API de Claude está caída o devuelve basura, el sueño ya está a salvo.
   Roberto y el campo de texto.
 - La repregunta única y la sugerencia única (§6.2) se calculan en el dispositivo
   con los datos locales. Sin red, sin modelo.
+- **Sólo el celular captura** (P7, resuelto). Eso elimina la carrera entre dos
+  dispositivos y deja el computador para revisar, taller, cierres y PDF.
+- **P2, propuesta:** sin red, la pantalla dice «guardado» y nada más; el S-ID
+  aparece cuando sincroniza. La otra opción —que el dispositivo traiga un S-ID
+  reservado de antemano— deja huecos en la numeración cuando una reserva no se
+  usa, y el cierre semanal (§6.6) exige un rango correlativo sin huecos. Se
+  implementa así salvo que digas lo contrario.
 - En iOS conviene instalar la PWA a la pantalla de inicio (los datos de una PWA
   instalada no se desalojan como los de una pestaña) y se pide
   `navigator.storage.persist()` al instalar.
@@ -801,7 +810,9 @@ por el repositorio ni por el chat.
   de entorno. Dicho con honestidad: eso protege respaldos, snapshots y un disco
   robado, no un servidor comprometido en caliente. La alternativa más fuerte es
   un volumen LUKS que pide passphrase en cada arranque (cada reinicio del VPS
-  necesita que estés presente). Ver la pregunta de cifrado más abajo.
+  necesita que estés presente, entrando por Tailscale a desbloquear a mano).
+  Decidido por SQLCipher (§16.3): el costo de LUKS se paga todos los meses y
+  cubre una amenaza que no es la real aquí.
 - La llave de la API de Claude sólo en el servidor.
 - Los logs registran tarea, duración y tamaño; **nunca** texto de sueños. Una
   prueba lo verifica pasando un sueño sintético con una cadena marcadora y
@@ -813,10 +824,11 @@ La especificación deja abierto usar «reconocimiento de voz del navegador». Ha
 que saber que la Web Speech API de Chrome **envía el audio a servidores de
 Google**: eso choca con el invariante 11 y además no funciona sin conexión. La
 recomendación es el dictado del teclado nativo sobre un `<textarea>` normal: en
-iPhone moderno y en Android con el paquete de idioma descargado es
-reconocimiento en el dispositivo, funciona sin red, no pide permisos cada vez y
-no requiere una línea de código. La prueba de una semana (P9) debería medir ese
-camino, y el servicio por API queda como plan B si la calidad no alcanza.
+iPhone el reconocimiento es en el dispositivo, funciona sin red, no pide
+permisos cada vez y no requiere una línea de código. Con iPhone confirmado
+(§16.2), ése es el camino: el micrófono del teclado, sin que la app sepa que
+existe. La prueba de una semana (P9) mide la calidad de esa transcripción, y un
+servicio por API queda como plan B si no alcanza.
 
 ---
 
@@ -907,12 +919,16 @@ agosto-septiembre regenerado contra el impreso.
 
 ## 13. Lo que necesito de ti
 
-**Bloquea la etapa 0:**
-- P8: proveedor y ubicación del VPS, y destino de los respaldos externos.
-- Decisión de cifrado en reposo (SQLCipher con llave en el host vs. volumen LUKS
-  con passphrase en cada arranque).
-- P7: ¿captura también el computador?
-- Qué celular es (iPhone o Android), para el dictado y el almacenamiento de la PWA.
+**Bloquea la etapa 0:** nada pendiente de decisión. Lo que falta es
+ejecución tuya, con el runbook que escribo yo:
+- crear la cuenta y el servidor en Vultr (región Santiago) y entregarme el acceso;
+- crear la cuenta de Backblaze B2 con un bucket privado y una credencial de sólo
+  escritura;
+- instalar Tailscale en el celular y en el computador;
+- la clave de la API de Claude;
+- guardar en un lugar seguro, fuera del VPS, la clave privada de `age` y la
+  contraseña de la base: sin ellas los respaldos no se pueden restaurar y nadie
+  los puede recuperar por ti.
 
 **Bloquea la etapa 1:**
 - Los archivos del sistema actual: `bitacora-2026-08.md`, `bitacora-2026-09.md`,
@@ -964,3 +980,67 @@ dictado), P10 **nuevo**: la lista de las 44 cartas del mazo, número y nombre.
 - **Depender de la API de Claude para la ficha.** Mitigado por diseño: el crudo
   se guarda antes y la ficha borrador se encola; si el modelo no está, hay una
   bandeja con sueños guardados sin ficha, y nada se pierde.
+
+---
+
+## 16. Decisiones resueltas el 13 de octubre de 2026
+
+### 16.1 P7 — Captura sólo desde el celular
+El computador no captura. La sincronización se simplifica (un solo origen, sin
+dos dictados compitiendo) y el computador queda para lo que se hace despierto:
+revisar fichas, taller, cierres y PDF. Si más adelante quieres capturar desde el
+computador, no hay que rehacer nada: entra por la misma puerta (§4).
+
+### 16.2 Celular — iPhone
+Dictado del teclado de iOS, en el dispositivo, sin red y sin permisos por vez.
+La PWA se instala en la pantalla de inicio (una PWA instalada no sufre el
+desalojo de datos que iOS aplica a las pestañas) y pide almacenamiento
+persistente al instalar.
+
+### 16.3 Cifrado en reposo — SQLCipher para la base, `age` para los respaldos
+Recomendado y adoptado. La razón es el costo del reinicio: con LUKS, cada vez
+que el VPS se reinicia —actualización de kernel, mantención del proveedor, un
+corte— la app queda caída hasta que entres por Tailscale a escribir la
+passphrase a mano. Eso se paga para siempre, y lo que compra es protección
+contra un atacante que ya tiene control del servidor en caliente; contra ése,
+tampoco LUKS salva mucho, porque con el volumen montado el archivo está abierto.
+La amenaza realista aquí es otra: un respaldo que se filtra, un snapshot del
+proveedor, un disco dado de baja. Contra esas tres, SQLCipher más `age` sirve
+igual que LUKS, y el VPS vuelve solo después de un reinicio.
+
+Queda escrito sin adornos: la llave de la base vive en el mismo servidor. Si
+alguna vez te importa cerrar también ese hueco, se agrega LUKS debajo sin tocar
+la aplicación.
+
+### 16.4 P8 — VPS en Vultr Santiago, respaldos en Backblaze B2
+Recomendado y adoptado, por tres razones en este orden:
+
+1. **Latencia.** Vultr tiene centro de datos en Santiago de Chile desde 2023.
+   Desde tu casa son milisegundos; un VPS en Alemania o en Virginia son 150 a
+   250 ms en cada toque de pantalla. En una app que se usa medio dormido, eso se
+   nota.
+2. **Jurisdicción.** El corpus es material íntimo. Que el disco esté en Chile y
+   no en otro país es un argumento por sí solo.
+3. **Tamaño.** El plan más chico alcanza: 1 vCPU y 1 GB de RAM sobran para
+   FastAPI, SQLite y reportlab, y Vultr permite agrandar el servidor con un
+   clic si alguna vez aprieta. Para que 1 GB alcance, el frontend se compila
+   fuera del VPS y al servidor sólo llegan archivos ya listos (por eso el plan
+   no instala Node en producción). Conviene habilitar 2 GB de swap.
+
+Para los respaldos, Backblaze B2 con su tramo gratuito permanente de 10 GB: el
+corpus es texto, un mes de sueños pesa menos que una foto. Los respaldos salen
+del VPS ya cifrados con `age`, así que Backblaze nunca ve contenido y la clave
+privada no vive en el servidor. Si prefieres que los respaldos lleguen a una
+máquina tuya por Tailscale en vez de a un tercero, el script queda
+parametrizado y se cambia el destino en una línea.
+
+Precios: los verifiqué y están en movimiento (Hetzner subió sus planes en abril
+de 2026 y hay fuentes que se contradicen), así que no los dejo escritos aquí
+como si fueran fijos. El orden de magnitud es unos pocos dólares al mes por el
+servidor y cero por los respaldos mientras el corpus quepa en 10 GB. Lo
+confirmas en la página de Vultr al momento de crear la cuenta.
+
+### 16.5 Lo que sigue pendiente
+P1 (numeración al partir un sueño), P2 (propuesta en §5, a tu palabra), P3, P4,
+P5, P6, P9 y P10 (la lista de las 44 cartas). Cada uno se pregunta cuando su
+etapa lo necesite, como pide §0.4 de la especificación.
