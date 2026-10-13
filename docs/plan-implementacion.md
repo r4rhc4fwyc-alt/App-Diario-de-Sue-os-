@@ -334,8 +334,12 @@ aplicable, la técnica del sueño es `no declarada`, puesta por código.
 
 ```sql
 CREATE TABLE carta_mazo (
-  numero INTEGER PRIMARY KEY CHECK (numero BETWEEN 1 AND 44),
-  nombre TEXT NOT NULL
+  numero        INTEGER PRIMARY KEY CHECK (numero BETWEEN 1 AND 44),
+  nombre        TEXT NOT NULL,
+  bloque        TEXT CHECK (bloque IS NULL OR bloque IN (
+                  'negra','blanca','cielo estrellado')),
+  foto_carta_id INTEGER REFERENCES archivo(id),   -- foto de la carta; se muestra al sacarla
+  foto_guia_id  INTEGER REFERENCES archivo(id)    -- opcional: foto de la página del librito
 );
 
 CREATE TABLE noche (
@@ -369,8 +373,9 @@ CREATE TABLE carta_tirada (
 );
 ```
 
-Hace falta la lista de las 44 cartas (número + nombre) para sembrar
-`carta_mazo`: queda como pendiente P10.
+`carta_mazo` se siembra con fotos, no a mano (ver §17.3): Roberto fotografía las
+44 cartas una vez y la app lee número, nombre y bloque de cada foto para que él
+confirme. Esto resuelve P10 sin inventar ni transcribir contenido con derechos.
 
 ### 3.7 Correcciones de transcripción (invariante 3)
 
@@ -1098,13 +1103,20 @@ es de comodidad: elimina una familia entera de errores.
   taller → en la app ACTO es una faceta abierta que confirma Roberto.
 
 ### 17.3 Detalles de contenido que no estaban en la especificación
-- **El mazo, a fondo.** *Lucid Dreaming, Lucid Living* (Burton & Burton), 44
-  cartas en tres bloques (negras 1–22 Lucid Dream Journeys, blancas 23–33 State
-  Checks/estabilización/cambio de realidad, cielo estrellado 34–44), y **cada
-  carta trae un mensaje de vigilia y uno de sueño**. La tabla `carta_mazo` debe
-  guardar bloque y, si Roberto quiere, los dos mensajes — así la app puede
-  mostrarlos cuando se saca una carta, sin que el modelo tenga que conocer el
-  mazo de memoria.
+- **El mazo, a fondo.** *Lucid Dreaming, Lucid Living* de Norma J. y Nisha
+  Burton (Red Wheel, 2023), 44 cartas en tres bloques (negras 1–22 Lucid Dream
+  Journeys; blancas 23–33 State Checks/estabilización/cambio de realidad; cielo
+  estrellado 34–44 Guías y Guardianes), cada carta con mensaje de vigilia y
+  mensaje de sueño. **Decisión sobre el contenido del mazo (resuelve P10):** el
+  catálogo NO se transcribe a mano ni lo rellena el modelo de memoria —el
+  contenido del librito no está disponible de forma fiable y fabricarlo
+  envenenaría el corpus—. En su lugar, Roberto fotografía las 44 cartas una vez;
+  la app las guarda (`carta_mazo` + `archivo`) y, con el mismo lector de fotos de
+  §7.1, propone número + nombre + bloque de cada una para que Roberto confirme.
+  Al sacar una carta, la app muestra su foto; los dos mensajes se leen de la
+  imagen. Si Roberto quiere los mensajes como texto, fotografía también la página
+  del librito y se guarda junto a la carta. `carta_mazo`: numero, nombre, bloque,
+  foto_carta_id, y opcional foto_guia_id.
 - **Autoverificación dentro del crudo.** Cuando el relato ya trae su propia
   verificación ("es un lugar real que existe"), el generador de ficha debe
   proponer una asignación con `modo_verificacion = 'testimonio dentro del crudo'`
@@ -1120,7 +1132,7 @@ es de comodidad: elimina una familia entera de errores.
   funciona; despierta varias veces por noche; perfil MILD con WBTB incorporado).
   Esto va al prompt del taller **con un cortafuegos explícito**: calibra el TONO
   y el MODO de dirigirse a él, nunca el significado de un símbolo. El perfil de
-  inducción jamás se usa para sugerir técnicas (invariante: no se infieren).
+  inducción jamás se usa para sugerir técnicas (invariante: no se infieren). **Aprobado por Roberto** el 13 oct 2026: va al prompt del taller con ese cortafuegos.
 - **Dream signs = puente diario ↔ inducción.** Lo que se repite en el corpus
   pasa a ser el objetivo de los chequeos de realidad diurnos. (La app los
   muestra en cierres y en Explorar; nunca como recordatorio, por el invariante 8.)
