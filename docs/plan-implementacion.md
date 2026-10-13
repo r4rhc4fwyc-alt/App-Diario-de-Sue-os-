@@ -333,13 +333,15 @@ aplicable, la técnica del sueño es `no declarada`, puesta por código.
 ### 3.6 Noche y mazo (§4.8, §6.1)
 
 ```sql
+-- Se llena carta por carta, el día que cada una sale (no de antemano).
 CREATE TABLE carta_mazo (
   numero        INTEGER PRIMARY KEY CHECK (numero BETWEEN 1 AND 44),
   nombre        TEXT NOT NULL,
   bloque        TEXT CHECK (bloque IS NULL OR bloque IN (
                   'negra','blanca','cielo estrellado')),
-  foto_carta_id INTEGER REFERENCES archivo(id),   -- foto de la carta; se muestra al sacarla
-  foto_guia_id  INTEGER REFERENCES archivo(id)    -- opcional: foto de la página del librito
+  descripcion   TEXT,                             -- lo que Roberto aporta al registrarla
+  foto_carta_id INTEGER REFERENCES archivo(id),   -- foto de la carta; se muestra al salir de nuevo
+  registrada_en TEXT                              -- primera vez que se registró
 );
 
 CREATE TABLE noche (
@@ -373,9 +375,9 @@ CREATE TABLE carta_tirada (
 );
 ```
 
-`carta_mazo` se siembra con fotos, no a mano (ver §17.3): Roberto fotografía las
-44 cartas una vez y la app lee número, nombre y bloque de cada foto para que él
-confirme. Esto resuelve P10 sin inventar ni transcribir contenido con derechos.
+`carta_mazo` empieza vacía y se llena sola (ver §17.3): el día que sale una
+carta, Roberto sube su foto y descripción y la app crea esa fila, o la reconoce
+si ya salió antes. Sin preparación previa, sin inventar ni copiar el librito.
 
 ### 3.7 Correcciones de transcripción (invariante 3)
 
@@ -1107,16 +1109,15 @@ es de comodidad: elimina una familia entera de errores.
   Burton (Red Wheel, 2023), 44 cartas en tres bloques (negras 1–22 Lucid Dream
   Journeys; blancas 23–33 State Checks/estabilización/cambio de realidad; cielo
   estrellado 34–44 Guías y Guardianes), cada carta con mensaje de vigilia y
-  mensaje de sueño. **Decisión sobre el contenido del mazo (resuelve P10):** el
-  catálogo NO se transcribe a mano ni lo rellena el modelo de memoria —el
-  contenido del librito no está disponible de forma fiable y fabricarlo
-  envenenaría el corpus—. En su lugar, Roberto fotografía las 44 cartas una vez;
-  la app las guarda (`carta_mazo` + `archivo`) y, con el mismo lector de fotos de
-  §7.1, propone número + nombre + bloque de cada una para que Roberto confirme.
-  Al sacar una carta, la app muestra su foto; los dos mensajes se leen de la
-  imagen. Si Roberto quiere los mensajes como texto, fotografía también la página
-  del librito y se guarda junto a la carta. `carta_mazo`: numero, nombre, bloque,
-  foto_carta_id, y opcional foto_guia_id.
+  mensaje de sueño. **Decisión sobre el contenido del mazo (resuelve P10,
+  13 oct 2026):** el catálogo NO se prepara de antemano ni lo rellena el modelo
+  de memoria —el contenido del librito no está disponible de forma fiable y
+  fabricarlo envenenaría el corpus—. Se llena **de forma incremental, carta por
+  carta, el día que cada una sale.** Cuando Roberto saca una carta, sube su foto
+  y una descripción; la app crea (o reconoce, si ya salió antes) esa fila de
+  `carta_mazo`. Así el mazo se va poblando con el uso real, sin trabajo previo y
+  sin tocar nada con derechos. `carta_mazo` empieza vacía. No queda ningún
+  pendiente P10 que bloquee nada.
 - **Autoverificación dentro del crudo.** Cuando el relato ya trae su propia
   verificación ("es un lugar real que existe"), el generador de ficha debe
   proponer una asignación con `modo_verificacion = 'testimonio dentro del crudo'`
